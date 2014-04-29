@@ -49,7 +49,7 @@ RUN pip install -r requirements.txt
 # so you need to use a new tag to force a rebuild.
 RUN git clone https://github.com/micktwomey/gamecraft-mk-iii.git gamecraft && \
     cd gamecraft && \
-    git checkout 0.0.5
+    git checkout 0.0.6
 
 # Add the dev version to the python path
 RUN echo /gamecraft/src/development > /usr/local/lib/python3.4/dist-packages/gamecraft.pth
@@ -57,11 +57,11 @@ RUN echo /gamecraft/src/development > /usr/local/lib/python3.4/dist-packages/gam
 # Add the real version to the python path
 RUN echo /gamecraft/src/gamecraft >> /usr/local/lib/python3.4/dist-packages/gamecraft.pth
 
-ADD uwsgi.ini /gamecraft/uwsgi.ini
 
 RUN mkdir -p /gamecraft/static
 RUN django-admin collectstatic --clear --noinput
 
+ADD uwsgi.ini /gamecraft/uwsgi.ini
 # CMD ["runserver", "0.0.0.0:8000"]
 # ENTRYPOINT ["/usr/local/bin/django-admin"]
 
