@@ -3,10 +3,12 @@ django-debug-toolbar==1.2
 django-pipeline==1.3.24
 docutils==0.11
 https://www.djangoproject.com/download/1.7b3/tarball/#egg=Django
+iso8601==0.1.10
 Markdown==2.4
 Pillow==2.4.0
 psycopg2==2.5.2
 pytz==2014.2
 PyYAML==3.11
+simplejson==3.4.1
 uWSGI==2.0.4
 uwsgitop==0.8
