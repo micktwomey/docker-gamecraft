@@ -22,7 +22,7 @@ VOLUME ["/gamecraft/backups"]
 
 ENV DJANGO_SETTINGS_MODULE gamecraft.settings_docker
 
-RUN echo "deb http://ppa.launchpad.net/chris-lea/node.js/ubuntu saucy main " > /etc/apt/sources.list.d/nodejs.list \
+RUN echo "deb http://ppa.launchpad.net/chris-lea/node.js/ubuntu trusty main " > /etc/apt/sources.list.d/nodejs.list \
     && apt-key adv --keyserver keyserver.ubuntu.com --recv-keys C7917B12
 
 RUN apt-get -y update && \
@@ -42,6 +42,9 @@ RUN npm install -g uglify-js@1.3.5
 RUN mkdir -p /gamecraft/src
 WORKDIR /gamecraft/src
 
+# Currently it speeds up development to store requirements with the
+# dockerfile, since the layer is cached. In future it'll probably make
+# sense to move back into the django project itself.
 ADD requirements.txt /gamecraft/src/requirements.txt
 RUN pip install -r requirements.txt
 
@@ -49,7 +52,7 @@ RUN pip install -r requirements.txt
 # so you need to use a new tag to force a rebuild.
 RUN git clone https://github.com/micktwomey/gamecraft-mk-iii.git gamecraft && \
     cd gamecraft && \
-    git checkout 0.0.6
+    git checkout 0.0.7
 
 # Add the dev version to the python path
 RUN echo /gamecraft/src/development > /usr/local/lib/python3.4/dist-packages/gamecraft.pth
@@ -57,13 +60,12 @@ RUN echo /gamecraft/src/development > /usr/local/lib/python3.4/dist-packages/gam
 # Add the real version to the python path
 RUN echo /gamecraft/src/gamecraft >> /usr/local/lib/python3.4/dist-packages/gamecraft.pth
 
-
+# Expose the static volume to allow other HTTP servers to serve directly
+VOLUME ["/gamecraft/static"]
 RUN mkdir -p /gamecraft/static
 RUN django-admin collectstatic --clear --noinput
 
+# Setup uwsgi to run the django app + serve static files
 ADD uwsgi.ini /gamecraft/uwsgi.ini
-# CMD ["runserver", "0.0.0.0:8000"]
-# ENTRYPOINT ["/usr/local/bin/django-admin"]
-
 CMD ["/gamecraft/uwsgi.ini"]
 ENTRYPOINT ["/usr/local/bin/uwsgi"]
