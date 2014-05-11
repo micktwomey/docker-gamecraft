@@ -6,11 +6,14 @@ TAG=micktwomey/gamecraft:$(VERSION)
 all: build
 
 build:
-	sed -i -s "s/git checkout .*/git checkout $(GIT_VERSION)/" Dockerfile
+	sed -e "s^git checkout .*^git checkout $(GIT_VERSION)^" -i "" Dockerfile
 	docker build -t $(TAG) .
 
 shell:
-	docker run --rm $(MOUNTS) $(LINKS) -i -t --entrypoint=/bin/bash $(TAG) -i
+	docker run --rm -i -t --entrypoint=/bin/bash $(TAG) -i
+
+test:
+	docker run --rm -i -t --entrypoint=/usr/local/bin/django-admin $(TAG) test --settings=gamecraft.settings gamecraft
 
 push:
 	docker push $(TAG)
