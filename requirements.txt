@@ -1,6 +1,7 @@
 django-allauth==0.16.1
 django-debug-toolbar==1.2
-django-imagekit==3.2.1
+# django-imagekit==3.2.1
+https://github.com/micktwomey/django-imagekit/archive/193dc00ac71a53c86e41da0cc7d48120056cd90c.zip#egg=django-imagekit
 django-pipeline==1.3.24
 docutils==0.11
 https://www.djangoproject.com/download/1.7.b4/tarball/#egg=Django
